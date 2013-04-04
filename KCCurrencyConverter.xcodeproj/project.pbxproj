@@ -86,8 +86,8 @@
 				088C595A170D312900CF80A2 /* KCAppDelegate.h */,
 				088C595B170D312900CF80A2 /* KCAppDelegate.m */,
 				088C5963170D312900CF80A2 /* MainStoryboard.storyboard */,
-				088C5966170D312900CF80A2 /* KCViewController.h */,
-				088C5967170D312900CF80A2 /* KCViewController.m */,
+				088C59A0170D3D7000CF80A2 /* Models */,
+				088C59A1170D3D7D00CF80A2 /* Controllers */,
 				088C5952170D312900CF80A2 /* Supporting Files */,
 			);
 			path = KCCurrencyConverter;
@@ -105,6 +105,22 @@
 				088C5961170D312900CF80A2 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		088C59A0170D3D7000CF80A2 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		088C59A1170D3D7D00CF80A2 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				088C5966170D312900CF80A2 /* KCViewController.h */,
+				088C5967170D312900CF80A2 /* KCViewController.m */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -299,6 +315,7 @@
 				088C596D170D312900CF80A2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
