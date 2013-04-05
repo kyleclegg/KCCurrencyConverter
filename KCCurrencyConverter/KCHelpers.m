@@ -12,6 +12,7 @@
 
 NSString * const kBaseURL                   = @"http://openexchangerates.org/api/";
 NSString * const kLatestRates               = @"latest.json";
+NSString * const kCountryCurrencies         = @"currencies.json";
 NSString * const kOpenExchangeRatesAppID    = @"b52594770e394e5c8998d1e8850c42ac";
 
 @end

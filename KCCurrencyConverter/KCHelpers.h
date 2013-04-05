@@ -12,6 +12,7 @@
 
 extern NSString * const kBaseURL;
 extern NSString * const kLatestRates;
+extern NSString * const kCountryCurrencies;
 extern NSString * const kOpenExchangeRatesAppID;
 
 @end

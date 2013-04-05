@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Kyle Clegg. All rights reserved.
 //
 
-#define kBgQueue dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+#define kBackgroundQueue dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
 #import "KCViewController.h"
 #import "KCHelpers.h"
@@ -21,45 +21,74 @@
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+
+  // Prepare HTTP request to get country codes and currency names
+  NSString *countriesURLString = [NSString stringWithFormat:@"%@%@?app_id=%@", kBaseURL, kCountryCurrencies, kOpenExchangeRatesAppID];
+  NSURL *countriesURL = [NSURL URLWithString:countriesURLString];
   
+  // Send HTTP request using GCD
+  dispatch_async(kBackgroundQueue, ^{
+    NSData* data = [NSData dataWithContentsOfURL:
+                    countriesURL];
+    [self performSelectorOnMainThread:@selector(fetchedCurrencies:)
+                           withObject:data waitUntilDone:YES];
+  });
   
   // Prepare HTTP request to get latest conversion rates
   NSString *latestRatesURLString = [NSString stringWithFormat:@"%@%@?app_id=%@", kBaseURL, kLatestRates, kOpenExchangeRatesAppID];
   NSLog(@"url is %@", latestRatesURLString);
   
   NSURL *latestRatesURL = [NSURL URLWithString:latestRatesURLString];
-  
-  dispatch_async(kBgQueue, ^{
+
+  // Send HTTP request using GCD
+  dispatch_async(kBackgroundQueue, ^{
     NSData* data = [NSData dataWithContentsOfURL:
                     latestRatesURL];
-    [self performSelectorOnMainThread:@selector(fetchedData:)
+    [self performSelectorOnMainThread:@selector(fetchedLatestRates:)
                            withObject:data waitUntilDone:YES];
   });
-
+  
 }
 
-- (void)fetchedData:(NSData *)responseData {
+- (void)fetchedCurrencies:(NSData *)responseData {
   //parse out the json data
   NSError* error;
   NSDictionary* jsonDict = [NSJSONSerialization JSONObjectWithData:responseData //1
-                        
-                        options:kNilOptions
-                        error:&error];
+                            
+                                                           options:kNilOptions
+                                                             error:&error];
   
-  
-    // Save our data
-    NSString *disclaimer = [jsonDict valueForKeyPath:@"disclaimer"];
-    NSString *license = [jsonDict valueForKeyPath:@"license"];
-    NSString *timestamp = [jsonDict valueForKeyPath:@"timestamp"];
-    NSString *base = [jsonDict valueForKeyPath:@"base"];
-    NSArray *rates = [jsonDict objectForKey:@"rates"];
+  NSLog(@"currency keys are %@", [jsonDict allKeys]);
+  NSLog(@"currency values are %@", [jsonDict allValues]);
+}
 
-    NSLog(@"Disclaimer: %@", disclaimer);
-    NSLog(@"License: %@", license);
-    NSLog(@"Timestamp: %@", timestamp);
-    NSLog(@"Base: %@", base);
-    NSLog(@"Rates: %@", rates);
+- (void)fetchedLatestRates:(NSData *)responseData {
+  //parse out the json data
+  NSError* error;
+  NSDictionary* jsonDict = [NSJSONSerialization JSONObjectWithData:responseData //1
+                            
+                                                           options:kNilOptions
+                                                             error:&error];
   
+  
+  // Save our data
+  NSString *disclaimer = [jsonDict valueForKeyPath:@"disclaimer"];
+  NSString *license = [jsonDict valueForKeyPath:@"license"];
+  NSString *timestamp = [jsonDict valueForKeyPath:@"timestamp"];
+  NSString *base = [jsonDict valueForKeyPath:@"base"];
+  NSDictionary *rates = [jsonDict objectForKey:@"rates"];
+  
+  NSLog(@"Disclaimer: %@", disclaimer);
+  NSLog(@"License: %@", license);
+  NSLog(@"Timestamp: %@", timestamp);
+  NSLog(@"Base: %@", base);
+  NSLog(@"Rates: %@", rates);
+  
+  NSDecimalNumber *AEDRate = [rates valueForKeyPath:@"AED"];
+  NSLog(@"their rate is %@", AEDRate);
+  
+  NSLog(@"rate keys are 3%@", [rates allKeys]);
+  NSLog(@"rate values are 3%@", [rates allValues]);
 }
 
 @end
