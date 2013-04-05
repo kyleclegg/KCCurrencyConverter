@@ -6,11 +6,11 @@
 //  Copyright (c) 2013 Kyle Clegg. All rights reserved.
 //
 
+#define kBgQueue dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+
 #import "KCViewController.h"
 #import "KCHelpers.h"
-#import "AFNetworking/AFJSONRequestOperation.h"
-#import "AFNetworking/AFHTTPRequestOperation.h"
-#import "AFNetworking/AFHTTPClient.h"
+
 
 @interface KCViewController ()
 
@@ -23,33 +23,43 @@
   [super viewDidLoad];
   
   
-  // Perform HTTP Request
+  // Prepare HTTP request to get latest conversion rates
   NSString *latestRatesURLString = [NSString stringWithFormat:@"%@%@?app_id=%@", kBaseURL, kLatestRates, kOpenExchangeRatesAppID];
-  NSURL *latestRatesURL = [NSURL URLWithString:latestRatesURLString];
-  NSURLRequest *jsonRequest = [NSURLRequest requestWithURL:latestRatesURL];
+  NSLog(@"url is %@", latestRatesURLString);
   
-  AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:jsonRequest success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-    
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    
-    // The following code will only be executed upon successful HTTP communication
-    NSString *disclaimer = [JSON valueForKeyPath:@"disclaimer"];
-    NSString *license = [JSON valueForKeyPath:@"license"];
-    NSString *timestamp = [JSON valueForKeyPath:@"timestamp"];
-    NSString *base = [JSON valueForKeyPath:@"base"];
+  NSURL *latestRatesURL = [NSURL URLWithString:latestRatesURLString];
+  
+  dispatch_async(kBgQueue, ^{
+    NSData* data = [NSData dataWithContentsOfURL:
+                    latestRatesURL];
+    [self performSelectorOnMainThread:@selector(fetchedData:)
+                           withObject:data waitUntilDone:YES];
+  });
 
-    
+}
+
+- (void)fetchedData:(NSData *)responseData {
+  //parse out the json data
+  NSError* error;
+  NSDictionary* jsonDict = [NSJSONSerialization JSONObjectWithData:responseData //1
+                        
+                        options:kNilOptions
+                        error:&error];
+  
+  
+    // Save our data
+    NSString *disclaimer = [jsonDict valueForKeyPath:@"disclaimer"];
+    NSString *license = [jsonDict valueForKeyPath:@"license"];
+    NSString *timestamp = [jsonDict valueForKeyPath:@"timestamp"];
+    NSString *base = [jsonDict valueForKeyPath:@"base"];
+    NSArray *rates = [jsonDict objectForKey:@"rates"];
+
     NSLog(@"Disclaimer: %@", disclaimer);
     NSLog(@"License: %@", license);
     NSLog(@"Timestamp: %@", timestamp);
     NSLog(@"Base: %@", base);
-    
-  } failure:^(NSURLRequest *request , NSURLResponse *response, NSError *error, id JSON){
-    NSLog(@"JSON retrieval failed: %@",[error localizedDescription]);
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-  }];
+    NSLog(@"Rates: %@", rates);
   
-  [operation start];
 }
 
 @end
