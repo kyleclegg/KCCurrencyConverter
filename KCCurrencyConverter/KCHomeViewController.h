@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "KCCurrencySelectViewController.h"
 
-@interface KCHomeViewController : UIViewController
+@interface KCHomeViewController : UIViewController <CurrencySelectViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *fromCurrencyLabel;
 @property (weak, nonatomic) IBOutlet UILabel *toCurrencyLabel;

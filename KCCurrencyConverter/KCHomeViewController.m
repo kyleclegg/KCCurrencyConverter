@@ -10,8 +10,6 @@
 
 #import "KCHomeViewController.h"
 #import "KCHelpers.h"
-#import "KCCurrencySelectViewController.h"
-
 
 @interface KCHomeViewController ()
 
@@ -91,7 +89,6 @@
                                                            options:kNilOptions
                                                              error:&error];
   
-  
   // Save our data
   NSString *disclaimer = [jsonDict valueForKeyPath:@"disclaimer"];
   NSString *license = [jsonDict valueForKeyPath:@"license"];
@@ -118,17 +115,34 @@
 {
   if ([[segue identifier] isEqualToString:@"FromCurrencySelect"])
   {
-    // Get reference to the destination view controller
+    // Get reference to the destination view controller and set data to be passed forward
     KCCurrencySelectViewController *viewController = [segue destinationViewController];
+    [viewController setDelegate:self];
     [viewController setCurrencyTypes:self.currencyTypes];
     [viewController setIsFromCurrencyType:YES];
   }
   else if ([[segue identifier] isEqualToString:@"ToCurrencySelect"])
   {
-    // Get reference to the destination view controller
+    // Get reference to the destination view controller and set data to be passed forward
     KCCurrencySelectViewController *viewController = [segue destinationViewController];
+    [viewController setDelegate:self];
     [viewController setCurrencyTypes:self.currencyTypes];
     [viewController setIsFromCurrencyType:NO];
+  }
+}
+
+#pragma mark - CurrencySelectViewControllerDelegate
+
+- (void)currencyCodeSelected:(NSString *)countryCode forFromCurrency:(BOOL)isFromCurrency
+{
+  // Retrieve data from child view controller
+  NSLog(@"user selected %@", countryCode);
+  
+  if (isFromCurrency) {
+    [self.fromCurrencyLabel setText:[NSString stringWithFormat:NSLocalizedString(@"FROM_CURRENCY", nil), countryCode, [self.currencyTypes objectForKey:countryCode]]];
+  }
+  else {
+    [self.toCurrencyLabel setText:[NSString stringWithFormat:NSLocalizedString(@"TO_CURRENCY", nil), countryCode, [self.currencyTypes objectForKey:countryCode]]];
   }
 }
 

@@ -15,9 +15,6 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mIm-or-Mat" userLabel="From View">
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5nm-lu-BbL">
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="85" id="a6X-QL-jZJ"/>
-                                        </constraints>
                                         <fontDescription key="fontDescription" type="boldSystem" size="button"/>
                                         <state key="normal" backgroundImage="blue_button.png">
                                             <color key="titleColor" red="0.19607843137254902" green="0.30980392156862746" blue="0.52156862745098043" alpha="1" colorSpace="calibratedRGB"/>
@@ -30,25 +27,27 @@
                                             <segue destination="zgt-C1-c5p" kind="push" identifier="FromCurrencySelect" id="Swl-G1-DGl"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="From: USD, United States Dollar" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8MN-Ez-cVh">
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="From: USD, United States Dollar" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="12" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8MN-Ez-cVh">
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="260" id="Tig-wJ-q1P"/>
+                                        </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="vJ9-Qh-j6M">
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="260" id="Chi-LC-3ra"/>
-                                        </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
                                     </textField>
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstItem="8MN-Ez-cVh" firstAttribute="centerX" secondItem="5nm-lu-BbL" secondAttribute="centerX" type="default" id="34g-as-gnz"/>
                                     <constraint firstItem="5nm-lu-BbL" firstAttribute="top" secondItem="mIm-or-Mat" secondAttribute="top" type="default" id="6ph-bQ-xV3"/>
                                     <constraint firstItem="vJ9-Qh-j6M" firstAttribute="top" secondItem="mIm-or-Mat" secondAttribute="top" constant="40" id="BNK-TU-mQz"/>
                                     <constraint firstItem="8MN-Ez-cVh" firstAttribute="leading" secondItem="vJ9-Qh-j6M" secondAttribute="leading" type="default" id="FkJ-zh-8Xl"/>
-                                    <constraint firstItem="vJ9-Qh-j6M" firstAttribute="centerX" secondItem="5nm-lu-BbL" secondAttribute="centerX" type="default" id="Xxx-gN-ll2"/>
+                                    <constraint firstItem="8MN-Ez-cVh" firstAttribute="trailing" secondItem="vJ9-Qh-j6M" secondAttribute="trailing" type="default" id="UwV-ei-eaB"/>
+                                    <constraint firstItem="5nm-lu-BbL" firstAttribute="bottom" secondItem="mIm-or-Mat" secondAttribute="bottom" type="default" id="Xy4-Ad-zLY"/>
                                     <constraint firstItem="5nm-lu-BbL" firstAttribute="leading" secondItem="mIm-or-Mat" secondAttribute="leading" type="default" id="b5c-vv-MJZ"/>
                                     <constraint firstItem="5nm-lu-BbL" firstAttribute="trailing" secondItem="mIm-or-Mat" secondAttribute="trailing" type="default" id="eKC-8O-JcV"/>
                                     <constraint firstItem="8MN-Ez-cVh" firstAttribute="top" secondItem="mIm-or-Mat" secondAttribute="top" constant="10" id="oez-ke-2yy"/>
@@ -57,9 +56,6 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qk3-Uz-Oy0" userLabel="To View">
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="djg-9W-Nrt">
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="85" id="YeH-jn-eB5"/>
-                                        </constraints>
                                         <fontDescription key="fontDescription" type="boldSystem" size="button"/>
                                         <state key="normal" backgroundImage="blue_button.png">
                                             <color key="titleColor" red="0.1960784314" green="0.30980392159999998" blue="0.52156862749999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -72,15 +68,15 @@
                                             <segue destination="zgt-C1-c5p" kind="push" identifier="ToCurrencySelect" id="2B5-8x-yGG"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="To: USD, United States Dollar" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oGQ-hx-H59">
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="To: USD, United States Dollar" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="12" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oGQ-hx-H59">
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="260" id="vYD-ly-Jc4"/>
+                                        </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ssr-gC-Gso">
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="260" id="336-Ph-iaO"/>
-                                        </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
                                     </textField>
@@ -91,8 +87,10 @@
                                     <constraint firstItem="djg-9W-Nrt" firstAttribute="top" secondItem="qk3-Uz-Oy0" secondAttribute="top" type="default" id="3nH-I1-SN7"/>
                                     <constraint firstItem="djg-9W-Nrt" firstAttribute="trailing" secondItem="qk3-Uz-Oy0" secondAttribute="trailing" type="default" id="3qg-aD-dCH"/>
                                     <constraint firstItem="djg-9W-Nrt" firstAttribute="leading" secondItem="qk3-Uz-Oy0" secondAttribute="leading" type="default" id="5yE-st-tMW"/>
+                                    <constraint firstItem="oGQ-hx-H59" firstAttribute="centerX" secondItem="djg-9W-Nrt" secondAttribute="centerX" type="default" id="DEf-dR-ck5"/>
                                     <constraint firstItem="oGQ-hx-H59" firstAttribute="top" secondItem="qk3-Uz-Oy0" secondAttribute="top" constant="10" id="N3o-jM-OlN"/>
-                                    <constraint firstItem="Ssr-gC-Gso" firstAttribute="centerX" secondItem="djg-9W-Nrt" secondAttribute="centerX" type="default" id="YqH-7w-qfO"/>
+                                    <constraint firstItem="oGQ-hx-H59" firstAttribute="trailing" secondItem="Ssr-gC-Gso" secondAttribute="trailing" type="default" id="RJD-nB-314"/>
+                                    <constraint firstItem="djg-9W-Nrt" firstAttribute="bottom" secondItem="qk3-Uz-Oy0" secondAttribute="bottom" type="default" id="bzH-Vw-CC3"/>
                                     <constraint firstItem="oGQ-hx-H59" firstAttribute="leading" secondItem="Ssr-gC-Gso" secondAttribute="leading" type="default" id="j4L-xf-f2w"/>
                                     <constraint firstAttribute="height" constant="85" type="user" id="v0J-s3-dgt"/>
                                 </constraints>
@@ -123,7 +121,7 @@
             </objects>
             <point key="canvasLocation" x="682" y="78"/>
         </scene>
-        <!--Currency Select View Controller-->
+        <!--Currency Select View Controller - Currencies-->
         <scene sceneID="k7D-Pu-vTA">
             <objects>
                 <tableViewController id="zgt-C1-c5p" customClass="KCCurrencySelectViewController" sceneMemberID="viewController">
@@ -158,7 +156,7 @@
                             <outlet property="delegate" destination="zgt-C1-c5p" id="HKl-VZ-TAf"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="H8Y-5R-UmP"/>
+                    <navigationItem key="navigationItem" title="Currencies" id="H8Y-5R-UmP"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I4G-ft-Nr2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

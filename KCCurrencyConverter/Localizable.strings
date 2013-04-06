@@ -1,3 +1,4 @@
 // Strings that will be used in our graphical user interfaces
 
 "FROM_CURRENCY" = "From: %@, %@";
+"TO_CURRENCY" = "To: %@, %@";

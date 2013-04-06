@@ -26,9 +26,18 @@
     NSLog(@"TO");
   }
   NSLog(@"%i", self.currencyTypes.count);
+
+  // Store currency codes and names in private arrays for use within the controller
+  NSMutableArray *mutableKeys = [[NSMutableArray alloc] init];
+  NSMutableArray *mutableValues = [[NSMutableArray alloc] init];
   
-  self.currencyCodes = [[self.currencyTypes allKeys] sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
-  self.currencyNames = [[self.currencyTypes allValues] sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+  for (NSString *key in [[self.currencyTypes allKeys] sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)]) {
+    [mutableKeys addObject:key];
+    [mutableValues addObject:[self.currencyTypes objectForKey:key]];
+  }
+  
+  self.currencyCodes = mutableKeys.copy;
+  self.currencyNames = mutableValues.copy;
 }
 
 #pragma mark - UITableView Delegate
@@ -39,8 +48,14 @@
   NSString *cellType = [tableView cellForRowAtIndexPath:indexPath].reuseIdentifier;
   NSLog(@"selected %@", cellType);
   
-  // Must do this last so that prepareForSegue:sender: can access indexPath
+  // Tell parent which code was selected
+  [self.delegate currencyCodeSelected:[self.currencyCodes objectAtIndex:indexPath.row] forFromCurrency:self.isFromCurrencyType];
+
+  // Deselect row
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
+  
+  // Pop view controller
+  [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - UITableViewDataSource Methods
