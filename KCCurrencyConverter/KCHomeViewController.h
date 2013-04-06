@@ -13,8 +13,9 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *fromCurrencyLabel;
 @property (weak, nonatomic) IBOutlet UILabel *toCurrencyLabel;
-
 @property (weak, nonatomic) IBOutlet UITextField *fromCurrencyTextField;
 @property (weak, nonatomic) IBOutlet UITextField *toCurrencyTextField;
+
+@property (strong, nonatomic) UIView *activityIndicatorView;
 
 @end

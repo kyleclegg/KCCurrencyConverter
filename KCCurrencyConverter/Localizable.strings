@@ -2,3 +2,4 @@
 
 "FROM_CURRENCY" = "From: %@, %@";
 "TO_CURRENCY" = "To: %@, %@";
+"LOADING_MESSAGE" = "Getting Rates...";

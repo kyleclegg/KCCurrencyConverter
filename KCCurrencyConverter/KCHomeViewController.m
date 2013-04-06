@@ -11,6 +11,7 @@
 #import "KCHomeViewController.h"
 #import "KCHelpers.h"
 #import <math.h>
+#import <QuartzCore/QuartzCore.h>
 
 @interface KCHomeViewController ()
 
@@ -21,7 +22,10 @@
 
 - (void)dismissKeyboard;
 - (void)convertCurrencyWithBaseFrom;
-- (void)toCurrencyTextFieldChanged:(id)sender;
+- (void)convertCurrencyWithBaseTo;
+- (void)prepareActivityIndicatorView;
+- (void)showActivityIndicatorView;
+- (void)hideActivityIndicatorView;
 
 @end
 
@@ -31,7 +35,7 @@
 {
   [super viewDidLoad];
   
-  // Default to USD and CAD
+  // Default to USD and EUR
   self.fromCurrencyCode = @"USD";
   self.toCurrencyCode = @"EUR";
   
@@ -48,10 +52,22 @@
                                              object:self.fromCurrencyTextField];
   
   [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(toCurrencyTextFieldChanged:)
+                                           selector:@selector(convertCurrencyWithBaseTo)
                                                name:UITextFieldTextDidChangeNotification
                                              object:self.toCurrencyTextField];
 
+  // Setup activity indicator
+  [self prepareActivityIndicatorView];
+  
+  // Fetch data from openexchangerates.org
+  [self showActivityIndicatorView];
+  [self fetchCurrencies];
+}
+
+#pragma mark - API Calls
+
+- (void)fetchCurrencies
+{
   // Prepare HTTP request to get country codes and currency names
   NSString *countriesURLString = [NSString stringWithFormat:@"%@%@?app_id=%@", kBaseURL, kCountryCurrencies, kOpenExchangeRatesAppID];
   NSURL *countriesURL = [NSURL URLWithString:countriesURLString];
@@ -63,13 +79,14 @@
     [self performSelectorOnMainThread:@selector(fetchedCurrencies:)
                            withObject:data waitUntilDone:YES];
   });
-  
+}
+
+- (void)fetchLatestRates
+{
   // Prepare HTTP request to get latest conversion rates
   NSString *latestRatesURLString = [NSString stringWithFormat:@"%@%@?app_id=%@", kBaseURL, kLatestRates, kOpenExchangeRatesAppID];
-  NSLog(@"url is %@", latestRatesURLString);
-  
   NSURL *latestRatesURL = [NSURL URLWithString:latestRatesURLString];
-
+  
   // Send HTTP request using GCD
   dispatch_async(kBackgroundQueue, ^{
     NSData* data = [NSData dataWithContentsOfURL:
@@ -77,10 +94,7 @@
     [self performSelectorOnMainThread:@selector(fetchedLatestRates:)
                            withObject:data waitUntilDone:YES];
   });
-  
 }
-
-#pragma mark - API Calls
 
 - (void)fetchedCurrencies:(NSData *)responseData
 {
@@ -92,8 +106,7 @@
   
   if (error == nil) {
     NSLog(@"successfully retrieved currencies");
-//    NSLog(@"currency keys are %@", [self.currencyTypes allKeys]);
-//    NSLog(@"currency values are %@", [self.currencyTypes allValues]);
+    [self fetchLatestRates];
   }
   else {
     NSLog(@"error parsing currency types");
@@ -102,11 +115,19 @@
 
 - (void)fetchedLatestRates:(NSData *)responseData
 {
+  // Remove activity indicator
+  [self hideActivityIndicatorView];
+  [self.fromCurrencyTextField becomeFirstResponder];
+  
   // Parse JSON using NSJSONSerialization
   NSError* error;
   NSDictionary* jsonDict = [NSJSONSerialization JSONObjectWithData:responseData
                                                            options:kNilOptions
                                                              error:&error];
+  
+  if (error == nil) {
+    NSLog(@"successfully retrieved rates");
+  }
   
   // Save our data
 //  NSString *disclaimer = [jsonDict valueForKeyPath:@"disclaimer"];
@@ -198,9 +219,54 @@
   }
 }
 
-- (void)toCurrencyTextFieldChanged:(id)sender
+- (void)convertCurrencyWithBaseTo
 {
   
+}
+
+- (void)prepareActivityIndicatorView
+{
+  // Setup a background view to dim everything and prevent clicks while loading
+  self.activityIndicatorView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height)];
+  self.activityIndicatorView.opaque = NO;
+  self.activityIndicatorView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.3f];
+  
+  UIView *spinnerView = [[UIView alloc] initWithFrame:CGRectMake(100, 200, 120, 120)];
+  spinnerView.layer.cornerRadius = 12;
+  spinnerView.opaque = NO;
+  spinnerView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.7f];
+  
+  // Setup a text label
+  UILabel *loadingTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 12, 80, 40)];
+  loadingTextLabel.text = NSLocalizedString(@"LOADING_MESSAGE", nil);
+  loadingTextLabel.numberOfLines = 2;
+  loadingTextLabel.font = [UIFont boldSystemFontOfSize:18.0f];
+  loadingTextLabel.textAlignment = NSTextAlignmentCenter;
+  loadingTextLabel.textColor = [UIColor colorWithWhite:1.0f alpha:1.0f];
+  loadingTextLabel.backgroundColor = [UIColor clearColor];
+  
+  [spinnerView addSubview:loadingTextLabel];
+  
+  // Setup an activity indicator spinner
+  UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+  spinner.frame = CGRectMake(42, 64, 37, 37);
+  [spinner startAnimating];
+  
+  [spinnerView addSubview:spinner];
+  
+  [self.activityIndicatorView addSubview:spinnerView];
+}
+
+- (void)showActivityIndicatorView
+{
+  [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+  [self.view addSubview:self.activityIndicatorView];
+}
+
+- (void)hideActivityIndicatorView
+{
+  [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+  [self.activityIndicatorView removeFromSuperview];
 }
 
 @end
