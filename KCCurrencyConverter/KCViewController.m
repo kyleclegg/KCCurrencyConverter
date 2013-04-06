@@ -14,6 +14,8 @@
 
 @interface KCViewController ()
 
+- (void)dismissKeyboard;
+
 @end
 
 @implementation KCViewController
@@ -21,6 +23,13 @@
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+  
+  // Add a tap gesture recognizer to recognize clicks outside the keyboard and hide it appropriately
+  UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]
+                                 initWithTarget:self
+                                 action:@selector(dismissKeyboard)];
+  
+  [self.view addGestureRecognizer:tap];
 
   // Prepare HTTP request to get country codes and currency names
   NSString *countriesURLString = [NSString stringWithFormat:@"%@%@?app_id=%@", kBaseURL, kCountryCurrencies, kOpenExchangeRatesAppID];
@@ -50,7 +59,10 @@
   
 }
 
-- (void)fetchedCurrencies:(NSData *)responseData {
+#pragma mark - API Calls
+
+- (void)fetchedCurrencies:(NSData *)responseData
+{
   //parse out the json data
   NSError* error;
   NSDictionary* jsonDict = [NSJSONSerialization JSONObjectWithData:responseData //1
@@ -62,7 +74,8 @@
   NSLog(@"currency values are %@", [jsonDict allValues]);
 }
 
-- (void)fetchedLatestRates:(NSData *)responseData {
+- (void)fetchedLatestRates:(NSData *)responseData
+{
   //parse out the json data
   NSError* error;
   NSDictionary* jsonDict = [NSJSONSerialization JSONObjectWithData:responseData //1
@@ -89,6 +102,13 @@
   
   NSLog(@"rate keys are 3%@", [rates allKeys]);
   NSLog(@"rate values are 3%@", [rates allValues]);
+}
+
+#pragma mark - Private Helper Methods
+
+- (void)dismissKeyboard
+{
+  [self.view endEditing:YES];
 }
 
 @end
