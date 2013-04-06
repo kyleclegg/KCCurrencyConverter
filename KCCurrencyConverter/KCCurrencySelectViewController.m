@@ -19,14 +19,6 @@
 
 - (void)viewDidLoad
 {
-  if (self.isFromCurrencyType) {
-    NSLog(@"FROM");
-  }
-  else {
-    NSLog(@"TO");
-  }
-  NSLog(@"%i", self.currencyTypes.count);
-
   // Store currency codes and names in private arrays for use within the controller
   NSMutableArray *mutableKeys = [[NSMutableArray alloc] init];
   NSMutableArray *mutableValues = [[NSMutableArray alloc] init];
@@ -44,10 +36,6 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  
-  NSString *cellType = [tableView cellForRowAtIndexPath:indexPath].reuseIdentifier;
-  NSLog(@"selected %@", cellType);
-  
   // Tell parent which code was selected
   [self.delegate currencyCodeSelected:[self.currencyCodes objectAtIndex:indexPath.row] forFromCurrency:self.isFromCurrencyType];
 

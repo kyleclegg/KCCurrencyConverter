@@ -18,7 +18,7 @@
 		088C5962170D312900CF80A2 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 088C5961170D312900CF80A2 /* Default-568h@2x.png */; };
 		088C5965170D312900CF80A2 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 088C5963170D312900CF80A2 /* MainStoryboard.storyboard */; };
 		088C5968170D312900CF80A2 /* KCHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 088C5967170D312900CF80A2 /* KCHomeViewController.m */; };
-		088C59C1170D43E800CF80A2 /* KCHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 088C59C0170D43E800CF80A2 /* KCHelpers.m */; };
+		088C59C1170D43E800CF80A2 /* KCConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 088C59C0170D43E800CF80A2 /* KCConstants.m */; };
 		088C59CD170FA2B200CF80A2 /* blue_button.png in Resources */ = {isa = PBXBuildFile; fileRef = 088C59CC170FA2B200CF80A2 /* blue_button.png */; };
 		088C59D0170FA32A00CF80A2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 088C59CF170FA32A00CF80A2 /* Localizable.strings */; };
 		088C59D3170FA51600CF80A2 /* KCCurrencySelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 088C59D2170FA51600CF80A2 /* KCCurrencySelectViewController.m */; };
@@ -41,8 +41,8 @@
 		088C5964170D312900CF80A2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		088C5966170D312900CF80A2 /* KCHomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KCHomeViewController.h; sourceTree = "<group>"; };
 		088C5967170D312900CF80A2 /* KCHomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KCHomeViewController.m; sourceTree = "<group>"; };
-		088C59BF170D43E800CF80A2 /* KCHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KCHelpers.h; sourceTree = "<group>"; };
-		088C59C0170D43E800CF80A2 /* KCHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KCHelpers.m; sourceTree = "<group>"; };
+		088C59BF170D43E800CF80A2 /* KCConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KCConstants.h; sourceTree = "<group>"; };
+		088C59C0170D43E800CF80A2 /* KCConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KCConstants.m; sourceTree = "<group>"; };
 		088C59CC170FA2B200CF80A2 /* blue_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blue_button.png; sourceTree = "<group>"; };
 		088C59CF170FA32A00CF80A2 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		088C59D1170FA51600CF80A2 /* KCCurrencySelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KCCurrencySelectViewController.h; sourceTree = "<group>"; };
@@ -106,8 +106,8 @@
 		088C5952170D312900CF80A2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				088C59BF170D43E800CF80A2 /* KCHelpers.h */,
-				088C59C0170D43E800CF80A2 /* KCHelpers.m */,
+				088C59BF170D43E800CF80A2 /* KCConstants.h */,
+				088C59C0170D43E800CF80A2 /* KCConstants.m */,
 				088C5953170D312900CF80A2 /* KCCurrencyConverter-Info.plist */,
 				088C5954170D312900CF80A2 /* InfoPlist.strings */,
 				088C59CF170FA32A00CF80A2 /* Localizable.strings */,
@@ -211,7 +211,7 @@
 				088C5958170D312900CF80A2 /* main.m in Sources */,
 				088C595C170D312900CF80A2 /* KCAppDelegate.m in Sources */,
 				088C5968170D312900CF80A2 /* KCHomeViewController.m in Sources */,
-				088C59C1170D43E800CF80A2 /* KCHelpers.m in Sources */,
+				088C59C1170D43E800CF80A2 /* KCConstants.m in Sources */,
 				088C59D3170FA51600CF80A2 /* KCCurrencySelectViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

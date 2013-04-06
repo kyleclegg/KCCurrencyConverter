@@ -9,7 +9,7 @@
 #define kBackgroundQueue dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
 #import "KCHomeViewController.h"
-#import "KCHelpers.h"
+#import "KCConstants.h"
 #import <math.h>
 #import <QuartzCore/QuartzCore.h>
 
@@ -59,9 +59,35 @@
   // Setup activity indicator
   [self prepareActivityIndicatorView];
   
-  // Fetch data from openexchangerates.org
-  [self showActivityIndicatorView];
-  [self fetchCurrencies];
+  // Check timestamp to see if data is still fresh, if so then load data from NSUserDefaults rather than hitting the server every time
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSInteger savedTimeStamp = [[defaults objectForKey:kNSUserDefaultsTimestamp] integerValue];
+  NSTimeInterval interval = [[NSDate date] timeIntervalSince1970];
+  NSInteger currentTimeStamp = interval;
+  NSLog(@"the timestamp is %i", savedTimeStamp);
+  NSLog(@"current timestamp is %i", currentTimeStamp);
+  
+  // Create a buffer window of 15 minutes
+  NSInteger bufferWindow = 900000;
+  NSInteger difference = currentTimeStamp - savedTimeStamp;
+  
+  // If outside our buffer window or first time, hit API
+  if (difference > bufferWindow || [defaults objectForKey:kNSUserDefaultsTimestamp] == nil) {
+    // Fetch data from openexchangerates.org
+    [self showActivityIndicatorView];
+    [self fetchCurrencies];
+  }
+  else {
+    // Load cached rates
+//    NSString *disclaimer = [defaults objectForKey:kNSUserDefaultsDisclaimer];
+//    NSString *license = [defaults objectForKey:kNSUserDefaultsLicense];
+    NSDictionary *currencies = [defaults objectForKey:kNSUserDefaultsCurrencies];
+    NSDictionary *rates = [defaults objectForKey:kNSUserDefaultsRates];
+    self.currencyTypes = currencies;
+    self.latestCurrencyRates = rates;
+    
+    [self.fromCurrencyTextField becomeFirstResponder];
+  }
 }
 
 #pragma mark - API Calls
@@ -105,8 +131,12 @@
                                                              error:&error];
   
   if (error == nil) {
-    NSLog(@"successfully retrieved currencies");
+    // Successfully retrieved currencies, now fetch latest rates
     [self fetchLatestRates];
+    
+    // Save currency types to NSUserDefaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:self.currencyTypes forKey:kNSUserDefaultsCurrencies];
   }
   else {
     NSLog(@"error parsing currency types");
@@ -126,29 +156,32 @@
                                                              error:&error];
   
   if (error == nil) {
-    NSLog(@"successfully retrieved rates");
+    
+    // Successfully retrieved rates from server, save to NSUserDefaults
+    NSString *disclaimer = [jsonDict valueForKeyPath:@"disclaimer"];
+    NSString *license = [jsonDict valueForKeyPath:@"license"];
+    NSString *timestamp = [jsonDict valueForKeyPath:@"timestamp"];
+    NSDictionary *latestRates = [jsonDict objectForKey:@"rates"];
+    
+    // Save to NSUserDefaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:disclaimer forKey:kNSUserDefaultsDisclaimer];
+    [defaults setObject:license forKey:kNSUserDefaultsLicense];
+    [defaults setObject:timestamp forKey:kNSUserDefaultsTimestamp];
+    [defaults setObject:latestRates forKey:kNSUserDefaultsRates];
+    [defaults synchronize];
+    
+    self.latestCurrencyRates = latestRates;
   }
-  
-  // Save our data
-//  NSString *disclaimer = [jsonDict valueForKeyPath:@"disclaimer"];
-//  NSString *license = [jsonDict valueForKeyPath:@"license"];
-  NSString *timestamp = [jsonDict valueForKeyPath:@"timestamp"];
-  NSString *base = [jsonDict valueForKeyPath:@"base"];
-  self.latestCurrencyRates = [jsonDict objectForKey:@"rates"];
-  
-//  NSLog(@"Disclaimer: %@", disclaimer);
-//  NSLog(@"License: %@", license);
-  NSLog(@"Timestamp: %@", timestamp);
-  NSLog(@"Base: %@", base);
+  else {
+    NSLog(@"error parsing latest rates");
+  }
 }
 
 #pragma mark - UITextField Delegate
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-  NSLog(@"from: %@", self.fromCurrencyCode);
-  NSLog(@"to: %@", self.toCurrencyCode);
-  
   // Only permit a single decimal point in the text field
   if ([string isEqualToString:@"."] &&[textField.text rangeOfString:@"."].location != NSNotFound) {
     return NO;
@@ -208,7 +241,6 @@
   NSDecimalNumber *toRate = [self.latestCurrencyRates valueForKeyPath:self.toCurrencyCode];
   NSDecimalNumber *fromValue = [NSDecimalNumber decimalNumberWithString:self.fromCurrencyTextField.text];
   
-  NSLog(@"about to %@ * %@", toRate, fromValue);
   float result = [toRate floatValue] * [fromValue floatValue] / [fromRate floatValue];
   
   if (isnan(result)) {
@@ -221,7 +253,7 @@
 
 - (void)convertCurrencyWithBaseTo
 {
-  
+  // TODO: Add ability to enter value into TO field
 }
 
 - (void)prepareActivityIndicatorView

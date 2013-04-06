@@ -8,11 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
-@interface KCHelpers : NSObject
+@interface KCConstants : NSObject
 
 extern NSString * const kBaseURL;
 extern NSString * const kLatestRates;
 extern NSString * const kCountryCurrencies;
 extern NSString * const kOpenExchangeRatesAppID;
+
+extern NSString * const kNSUserDefaultsTimestamp;
+extern NSString * const kNSUserDefaultsDisclaimer;
+extern NSString * const kNSUserDefaultsLicense;
+extern NSString * const kNSUserDefaultsRates;
+extern NSString * const kNSUserDefaultsCurrencies;
 
 @end
