@@ -10,4 +10,7 @@
 
 @interface KCCurrencySelectViewController : UITableViewController
 
+@property (strong, nonatomic) NSDictionary *currencyTypes;
+@property (assign, nonatomic) BOOL isFromCurrencyType;
+
 @end

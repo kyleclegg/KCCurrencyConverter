@@ -8,17 +8,21 @@
 
 #define kBackgroundQueue dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
-#import "KCViewController.h"
+#import "KCHomeViewController.h"
 #import "KCHelpers.h"
+#import "KCCurrencySelectViewController.h"
 
 
-@interface KCViewController ()
+@interface KCHomeViewController ()
+
+@property (strong, nonatomic) NSDictionary *currencyTypes;
+@property (strong, nonatomic) NSDictionary *latestCurrencyRates;
 
 - (void)dismissKeyboard;
 
 @end
 
-@implementation KCViewController
+@implementation KCHomeViewController
 
 - (void)viewDidLoad
 {
@@ -63,23 +67,27 @@
 
 - (void)fetchedCurrencies:(NSData *)responseData
 {
-  //parse out the json data
+  // Parse JSON using NSJSONSerialization
   NSError* error;
-  NSDictionary* jsonDict = [NSJSONSerialization JSONObjectWithData:responseData //1
-                            
+  self.currencyTypes = [NSJSONSerialization JSONObjectWithData:responseData
                                                            options:kNilOptions
                                                              error:&error];
   
-  NSLog(@"currency keys are %@", [jsonDict allKeys]);
-  NSLog(@"currency values are %@", [jsonDict allValues]);
+  if (error == nil) {
+    NSLog(@"successfully retrieved currencies");
+//    NSLog(@"currency keys are %@", [self.currencyTypes allKeys]);
+//    NSLog(@"currency values are %@", [self.currencyTypes allValues]);
+  }
+  else {
+    NSLog(@"error parsing currency types");
+  }
 }
 
 - (void)fetchedLatestRates:(NSData *)responseData
 {
-  //parse out the json data
+  // Parse JSON using NSJSONSerialization
   NSError* error;
-  NSDictionary* jsonDict = [NSJSONSerialization JSONObjectWithData:responseData //1
-                            
+  NSDictionary* jsonDict = [NSJSONSerialization JSONObjectWithData:responseData
                                                            options:kNilOptions
                                                              error:&error];
   
@@ -95,13 +103,33 @@
   NSLog(@"License: %@", license);
   NSLog(@"Timestamp: %@", timestamp);
   NSLog(@"Base: %@", base);
-  NSLog(@"Rates: %@", rates);
+//  NSLog(@"Rates: %@", rates);
   
   NSDecimalNumber *AEDRate = [rates valueForKeyPath:@"AED"];
   NSLog(@"their rate is %@", AEDRate);
   
-  NSLog(@"rate keys are 3%@", [rates allKeys]);
-  NSLog(@"rate values are 3%@", [rates allValues]);
+//  NSLog(@"rate keys are %@", [rates allKeys]);
+//  NSLog(@"rate values are %@", [rates allValues]);
+}
+
+#pragma mark - Segue
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+  if ([[segue identifier] isEqualToString:@"FromCurrencySelect"])
+  {
+    // Get reference to the destination view controller
+    KCCurrencySelectViewController *viewController = [segue destinationViewController];
+    [viewController setCurrencyTypes:self.currencyTypes];
+    [viewController setIsFromCurrencyType:YES];
+  }
+  else if ([[segue identifier] isEqualToString:@"ToCurrencySelect"])
+  {
+    // Get reference to the destination view controller
+    KCCurrencySelectViewController *viewController = [segue destinationViewController];
+    [viewController setCurrencyTypes:self.currencyTypes];
+    [viewController setIsFromCurrencyType:NO];
+  }
 }
 
 #pragma mark - Private Helper Methods

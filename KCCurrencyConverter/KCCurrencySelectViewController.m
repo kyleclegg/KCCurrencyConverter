@@ -10,11 +10,28 @@
 
 @interface KCCurrencySelectViewController ()
 
+@property (strong, nonatomic) NSArray *currencyCodes;
+@property (strong, nonatomic) NSArray *currencyNames;
+
 @end
 
 @implementation KCCurrencySelectViewController
 
-#pragma mark - Table view delegate
+- (void)viewDidLoad
+{
+  if (self.isFromCurrencyType) {
+    NSLog(@"FROM");
+  }
+  else {
+    NSLog(@"TO");
+  }
+  NSLog(@"%i", self.currencyTypes.count);
+  
+  self.currencyCodes = [[self.currencyTypes allKeys] sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+  self.currencyNames = [[self.currencyTypes allValues] sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+}
+
+#pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -26,7 +43,7 @@
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-#pragma mark - Table view data source
+#pragma mark - UITableViewDataSource Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -35,7 +52,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-  return 3;
+  return self.currencyTypes.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -66,33 +83,35 @@
 {
   // Update the date
   UILabel *currencyLabel = (UILabel *)[cell viewWithTag:1];
-  [currencyLabel setText:[NSString stringWithFormat:@"hey %i", indexPath.row]];
+  [currencyLabel setText:[NSString stringWithFormat:@"%@, %@", [self.currencyCodes objectAtIndex:indexPath.row], [self.currencyNames objectAtIndex:indexPath.row]]];
+}
+
+#pragma mark - TableView Single Letter Alphabet List
+
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+  return[NSArray arrayWithObjects:@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z", nil];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
   
-//  
-//  // Round the corners on the white background
-//  UIView *whiteBackground = (UIView *)[cell viewWithTag:6];
-//  whiteBackground.layer.cornerRadius = 5.0;
-//  whiteBackground.layer.masksToBounds = YES;
-//  
-//  // Set the timeline marker
-//  UIImageView *timelineMarker = (UIImageView *)[cell viewWithTag:7];
-//  UIImage *timelineDot = [UIImage imageNamed:@"timeline_dot.png"];
-//  UIImage *timelineDotTop = [UIImage imageNamed:@"timeline_dot_top.png"];
-//  UIImage *timelineDotBottom = [UIImage imageNamed:@"timeline_dot_bottom.png"];
-//  UIImage *timelineDotMiddle = [UIImage imageNamed:@"timeline_dot_middle.png"];
-//  
-//  if (self.entriesFromServer.count == 1) {
-//    timelineMarker.image = timelineDot;
-//  }
-//  else if (indexPath.row == 0) {
-//    timelineMarker.image = timelineDotTop;
-//  }
-//  else if (self.entriesFromServer.count == indexPath.row + 1) {
-//    timelineMarker.image = timelineDotBottom;
-//  }
-//  else {
-//    timelineMarker.image = timelineDotMiddle;
-//  }
+  NSInteger newRow = [self indexForFirstChar:title inArray:self.currencyCodes];
+  NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:newRow inSection:0];
+  [tableView scrollToRowAtIndexPath:newIndexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+  
+  return index;
+}
+
+// Return the index for the location of the first item in an array that begins with a certain character
+- (NSInteger)indexForFirstChar:(NSString *)character inArray:(NSArray *)array
+{
+  NSUInteger count = 0;
+  for (NSString *str in array) {
+    if ([str hasPrefix:character]) {
+      return count;
+    }
+    count++;
+  }
+  return 0;
 }
 
 @end
