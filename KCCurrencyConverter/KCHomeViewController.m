@@ -10,13 +10,18 @@
 
 #import "KCHomeViewController.h"
 #import "KCHelpers.h"
+#import <math.h>
 
 @interface KCHomeViewController ()
 
 @property (strong, nonatomic) NSDictionary *currencyTypes;
 @property (strong, nonatomic) NSDictionary *latestCurrencyRates;
+@property (strong, nonatomic) NSString *fromCurrencyCode;
+@property (strong, nonatomic) NSString *toCurrencyCode;
 
 - (void)dismissKeyboard;
+- (void)convertCurrencyWithBaseFrom;
+- (void)toCurrencyTextFieldChanged:(id)sender;
 
 @end
 
@@ -26,12 +31,26 @@
 {
   [super viewDidLoad];
   
+  // Default to USD and CAD
+  self.fromCurrencyCode = @"USD";
+  self.toCurrencyCode = @"EUR";
+  
   // Add a tap gesture recognizer to recognize clicks outside the keyboard and hide it appropriately
   UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]
                                  initWithTarget:self
                                  action:@selector(dismissKeyboard)];
-  
   [self.view addGestureRecognizer:tap];
+  
+  // Setup observers to monitor when textfields are changed
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(convertCurrencyWithBaseFrom)
+                                               name:UITextFieldTextDidChangeNotification
+                                             object:self.fromCurrencyTextField];
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(toCurrencyTextFieldChanged:)
+                                               name:UITextFieldTextDidChangeNotification
+                                             object:self.toCurrencyTextField];
 
   // Prepare HTTP request to get country codes and currency names
   NSString *countriesURLString = [NSString stringWithFormat:@"%@%@?app_id=%@", kBaseURL, kCountryCurrencies, kOpenExchangeRatesAppID];
@@ -90,23 +109,30 @@
                                                              error:&error];
   
   // Save our data
-  NSString *disclaimer = [jsonDict valueForKeyPath:@"disclaimer"];
-  NSString *license = [jsonDict valueForKeyPath:@"license"];
+//  NSString *disclaimer = [jsonDict valueForKeyPath:@"disclaimer"];
+//  NSString *license = [jsonDict valueForKeyPath:@"license"];
   NSString *timestamp = [jsonDict valueForKeyPath:@"timestamp"];
   NSString *base = [jsonDict valueForKeyPath:@"base"];
-  NSDictionary *rates = [jsonDict objectForKey:@"rates"];
+  self.latestCurrencyRates = [jsonDict objectForKey:@"rates"];
   
-  NSLog(@"Disclaimer: %@", disclaimer);
-  NSLog(@"License: %@", license);
+//  NSLog(@"Disclaimer: %@", disclaimer);
+//  NSLog(@"License: %@", license);
   NSLog(@"Timestamp: %@", timestamp);
   NSLog(@"Base: %@", base);
-//  NSLog(@"Rates: %@", rates);
+}
+
+#pragma mark - UITextField Delegate
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+  NSLog(@"from: %@", self.fromCurrencyCode);
+  NSLog(@"to: %@", self.toCurrencyCode);
   
-  NSDecimalNumber *AEDRate = [rates valueForKeyPath:@"AED"];
-  NSLog(@"their rate is %@", AEDRate);
-  
-//  NSLog(@"rate keys are %@", [rates allKeys]);
-//  NSLog(@"rate values are %@", [rates allValues]);
+  // Only permit a single decimal point in the text field
+  if ([string isEqualToString:@"."] &&[textField.text rangeOfString:@"."].location != NSNotFound) {
+    return NO;
+  }
+  return YES;
 }
 
 #pragma mark - Segue
@@ -136,13 +162,15 @@
 - (void)currencyCodeSelected:(NSString *)countryCode forFromCurrency:(BOOL)isFromCurrency
 {
   // Retrieve data from child view controller
-  NSLog(@"user selected %@", countryCode);
-  
   if (isFromCurrency) {
+    self.fromCurrencyCode = countryCode;
     [self.fromCurrencyLabel setText:[NSString stringWithFormat:NSLocalizedString(@"FROM_CURRENCY", nil), countryCode, [self.currencyTypes objectForKey:countryCode]]];
+    [self convertCurrencyWithBaseFrom];
   }
   else {
+    self.toCurrencyCode = countryCode;
     [self.toCurrencyLabel setText:[NSString stringWithFormat:NSLocalizedString(@"TO_CURRENCY", nil), countryCode, [self.currencyTypes objectForKey:countryCode]]];
+    [self convertCurrencyWithBaseFrom];
   }
 }
 
@@ -151,6 +179,28 @@
 - (void)dismissKeyboard
 {
   [self.view endEditing:YES];
+}
+
+- (void)convertCurrencyWithBaseFrom
+{
+  NSDecimalNumber *fromRate = [self.latestCurrencyRates valueForKeyPath:self.fromCurrencyCode];
+  NSDecimalNumber *toRate = [self.latestCurrencyRates valueForKeyPath:self.toCurrencyCode];
+  NSDecimalNumber *fromValue = [NSDecimalNumber decimalNumberWithString:self.fromCurrencyTextField.text];
+  
+  NSLog(@"about to %@ * %@", toRate, fromValue);
+  float result = [toRate floatValue] * [fromValue floatValue] / [fromRate floatValue];
+  
+  if (isnan(result)) {
+    [self.toCurrencyTextField setText:[NSString stringWithFormat:@""]];
+  }
+  else {
+    [self.toCurrencyTextField setText:[NSString stringWithFormat:@"%.02f", result]];
+  }
+}
+
+- (void)toCurrencyTextFieldChanged:(id)sender
+{
+  
 }
 
 @end
