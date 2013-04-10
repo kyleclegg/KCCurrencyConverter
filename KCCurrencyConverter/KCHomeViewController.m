@@ -31,6 +31,8 @@
 
 @implementation KCHomeViewController
 
+#pragma mark - View Lifecycle
+
 - (void)viewDidLoad
 {
   [super viewDidLoad];
@@ -58,17 +60,20 @@
 
   // Setup activity indicator
   [self prepareActivityIndicatorView];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+  [super viewWillAppear:animated];
   
   // Check timestamp to see if data is still fresh, if so then load data from NSUserDefaults rather than hitting the server every time
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   NSInteger savedTimeStamp = [[defaults objectForKey:kNSUserDefaultsTimestamp] integerValue];
   NSTimeInterval interval = [[NSDate date] timeIntervalSince1970];
   NSInteger currentTimeStamp = interval;
-  NSLog(@"the timestamp is %i", savedTimeStamp);
-  NSLog(@"current timestamp is %i", currentTimeStamp);
   
   // Create a buffer window of 15 minutes
-  NSInteger bufferWindow = 900000;
+  NSInteger bufferWindow = (15 * 60 * 1000);
   NSInteger difference = currentTimeStamp - savedTimeStamp;
   
   // If outside our buffer window or first time, hit API
@@ -131,6 +136,7 @@
                                                              error:&error];
   
   if (error == nil) {
+    
     // Successfully retrieved currencies, now fetch latest rates
     [self fetchLatestRates];
     
@@ -200,6 +206,7 @@
     [viewController setDelegate:self];
     [viewController setCurrencyTypes:self.currencyTypes];
     [viewController setIsFromCurrencyType:YES];
+    [viewController setSelectedCurrencyCode:self.fromCurrencyCode];
   }
   else if ([[segue identifier] isEqualToString:@"ToCurrencySelect"])
   {
@@ -208,6 +215,7 @@
     [viewController setDelegate:self];
     [viewController setCurrencyTypes:self.currencyTypes];
     [viewController setIsFromCurrencyType:NO];
+    [viewController setSelectedCurrencyCode:self.toCurrencyCode];
   }
 }
 

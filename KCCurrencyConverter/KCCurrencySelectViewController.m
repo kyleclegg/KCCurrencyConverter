@@ -13,9 +13,14 @@
 @property (strong, nonatomic) NSArray *currencyCodes;
 @property (strong, nonatomic) NSArray *currencyNames;
 
+- (NSInteger)indexForFirstChar:(NSString *)character inArray:(NSArray *)array;
+- (NSInteger)indexForCurrencyCode:(NSString *)currencyCode;
+
 @end
 
 @implementation KCCurrencySelectViewController
+
+#pragma mark - View Lifecycle
 
 - (void)viewDidLoad
 {
@@ -30,6 +35,19 @@
   
   self.currencyCodes = mutableKeys.copy;
   self.currencyNames = mutableValues.copy;
+}
+
+// This code will be executed after the tableview is completely loaded, but before the view appears
+- (void)viewWillAppear:(BOOL)animated
+{
+  [super viewWillAppear:animated];
+  
+  // Scroll to selected currency code by default
+  if (self.selectedCurrencyCode != nil) {
+    NSInteger newRow = [self indexForCurrencyCode:self.selectedCurrencyCode];
+    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:newRow inSection:0];
+    [self.tableView scrollToRowAtIndexPath:newIndexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+  }
 }
 
 #pragma mark - UITableView Delegate
@@ -60,7 +78,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  
 	static NSString *CellIdentifier = @"CurrencyType";
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
   
@@ -76,9 +93,7 @@
 
 - (UITableViewCell *)tableViewCellWithReuseIdentifier:(NSString *)identifier
 {
-	
 	UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-  
 	return cell;
 }
 
@@ -92,15 +107,28 @@
 #pragma mark - TableView Single Letter Alphabet List
 
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
-  return[NSArray arrayWithObjects:@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z", nil];
+
+  // Dynamically create an array of titles using the first letter of our row items. 
+  // This will allow us to support however many rows we may have, as well as any missing rows.
+  NSMutableArray *titles = [[NSMutableArray alloc] init];
+  for (NSString *code in self.currencyCodes) {
+    NSString *firstLetter = [code substringToIndex:1];
+    if (![titles containsObject:firstLetter]) {
+      [titles addObject:firstLetter];
+    }
+  }
+  return titles.copy;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
   
+  // Because our tableview is populated with a flat NSArray of strings, our table contains only a single section.
+  // In an effort to preserve the advantages afforded us by the simplicity of having a single section, rather than create 
+  // a section in our tableview for each letter of the alphabet solely for the purpose of the fast alphabetic scroll feature, 
+  // we will inspect the current section index title (A, B, or C, etc.) and scroll to the row at that position.
   NSInteger newRow = [self indexForFirstChar:title inArray:self.currencyCodes];
   NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:newRow inSection:0];
   [tableView scrollToRowAtIndexPath:newIndexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
-  
   return index;
 }
 
@@ -115,6 +143,19 @@
     count++;
   }
   return 0;
+}
+
+- (NSInteger)indexForCurrencyCode:(NSString *)currencyCode
+{
+  NSInteger index = -1;
+  NSInteger count = 0;
+  for (NSString *code in self.currencyCodes) {
+    if ([code isEqualToString:currencyCode]) {
+      return count;
+    }
+    count ++;
+  }
+  return index;
 }
 
 @end

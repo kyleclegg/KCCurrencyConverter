@@ -142,9 +142,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		088C5947170D312900CF80A2 /* KCCurrencyConverter */ = {
+		088C5947170D312900CF80A2 /* Currency */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 088C596B170D312900CF80A2 /* Build configuration list for PBXNativeTarget "KCCurrencyConverter" */;
+			buildConfigurationList = 088C596B170D312900CF80A2 /* Build configuration list for PBXNativeTarget "Currency" */;
 			buildPhases = (
 				088C5944170D312900CF80A2 /* Sources */,
 				088C5945170D312900CF80A2 /* Frameworks */,
@@ -154,7 +154,7 @@
 			);
 			dependencies = (
 			);
-			name = KCCurrencyConverter;
+			name = Currency;
 			productName = KCCurrencyConverter;
 			productReference = 088C5948170D312900CF80A2 /* KCCurrencyConverter.app */;
 			productType = "com.apple.product-type.application";
@@ -181,7 +181,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				088C5947170D312900CF80A2 /* KCCurrencyConverter */,
+				088C5947170D312900CF80A2 /* Currency */,
 			);
 		};
 /* End PBXProject section */
@@ -328,7 +328,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		088C596B170D312900CF80A2 /* Build configuration list for PBXNativeTarget "KCCurrencyConverter" */ = {
+		088C596B170D312900CF80A2 /* Build configuration list for PBXNativeTarget "Currency" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				088C596C170D312900CF80A2 /* Debug */,

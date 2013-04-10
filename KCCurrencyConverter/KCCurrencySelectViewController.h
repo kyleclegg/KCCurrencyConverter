@@ -14,7 +14,9 @@
 
 @property (nonatomic, weak) id <CurrencySelectViewControllerDelegate> delegate;
 
+@property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) NSDictionary *currencyTypes;
+@property (strong, nonatomic) NSString *selectedCurrencyCode;
 @property (assign, nonatomic) BOOL isFromCurrencyType;
 
 @end
