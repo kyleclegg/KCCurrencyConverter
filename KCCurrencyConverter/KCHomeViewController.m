@@ -7,6 +7,8 @@
 //
 
 #define kBackgroundQueue dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+#define kInfoButtonPadding 10.0
+#define kBufferWindowInMinutes 15
 
 #import "KCHomeViewController.h"
 #import "KCConstants.h"
@@ -62,9 +64,9 @@
   // Setup activity indicator
   [self prepareActivityIndicatorView];
   
-  // Add an info button to the navigation bar
+  // Add an info button to the navigation bar  
   UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
-  infoButton.frame = CGRectMake(infoButton.frame.origin.x, infoButton.frame.origin.y, infoButton.frame.size.width + 10.0, infoButton.frame.size.height);
+  infoButton.frame = CGRectMake(infoButton.frame.origin.x, infoButton.frame.origin.y, infoButton.frame.size.width + kInfoButtonPadding, infoButton.frame.size.height);
   [infoButton addTarget:self action:@selector(showInfoScreen) forControlEvents:UIControlEventTouchUpInside];
   self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:infoButton];
 }
@@ -80,7 +82,7 @@
   NSInteger currentTimeStamp = interval;
   
   // Create a buffer window of 15 minutes
-  NSInteger bufferWindow = (15 * 60 * 1000);
+  NSInteger bufferWindow = (kBufferWindowInMinutes * 60 * 1000);
   NSInteger difference = currentTimeStamp - savedTimeStamp;
   
   // If outside our buffer window or first time, hit API
@@ -197,7 +199,6 @@
   }
   // Permit up to 15 characters in the text field
   if (textField.text.length >= 15 && range.length == 0) {
-    NSLog(@"%@", string);
     return NO;
   }
   return YES;
