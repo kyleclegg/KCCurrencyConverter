@@ -110,8 +110,7 @@
   
   // Send HTTP request using GCD
   dispatch_async(kBackgroundQueue, ^{
-    NSData* data = [NSData dataWithContentsOfURL:
-                    countriesURL];
+    NSData *data = [NSData dataWithContentsOfURL:countriesURL];
     [self performSelectorOnMainThread:@selector(fetchedCurrencies:)
                            withObject:data waitUntilDone:YES];
   });
@@ -125,8 +124,7 @@
   
   // Send HTTP request using GCD
   dispatch_async(kBackgroundQueue, ^{
-    NSData* data = [NSData dataWithContentsOfURL:
-                    latestRatesURL];
+    NSData *data = [NSData dataWithContentsOfURL:latestRatesURL];
     [self performSelectorOnMainThread:@selector(fetchedLatestRates:)
                            withObject:data waitUntilDone:YES];
   });
@@ -194,7 +192,12 @@
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
   // Only permit a single decimal point in the text field
-  if ([string isEqualToString:@"."] &&[textField.text rangeOfString:@"."].location != NSNotFound) {
+  if ([string isEqualToString:@"."] && [textField.text rangeOfString:@"."].location != NSNotFound) {
+    return NO;
+  }
+  // Permit up to 15 characters in the text field
+  if (textField.text.length >= 15 && range.length == 0) {
+    NSLog(@"%@", string);
     return NO;
   }
   return YES;
@@ -204,8 +207,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-  if ([[segue identifier] isEqualToString:@"FromCurrencySelect"])
-  {
+  if ([[segue identifier] isEqualToString:@"FromCurrencySelect"]) {
     // Get reference to the destination view controller and set data to be passed forward
     KCCurrencySelectViewController *viewController = [segue destinationViewController];
     [viewController setDelegate:self];
@@ -213,8 +215,7 @@
     [viewController setIsFromCurrencyType:YES];
     [viewController setSelectedCurrencyCode:self.fromCurrencyCode];
   }
-  else if ([[segue identifier] isEqualToString:@"ToCurrencySelect"])
-  {
+  else if ([[segue identifier] isEqualToString:@"ToCurrencySelect"]) {
     // Get reference to the destination view controller and set data to be passed forward
     KCCurrencySelectViewController *viewController = [segue destinationViewController];
     [viewController setDelegate:self];
