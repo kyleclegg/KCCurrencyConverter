@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		082A3DE5171550C400A786EB /* KCInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 082A3DE4171550C400A786EB /* KCInfoViewController.m */; };
 		088C594C170D312900CF80A2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 088C594B170D312900CF80A2 /* UIKit.framework */; };
 		088C594E170D312900CF80A2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 088C594D170D312900CF80A2 /* Foundation.framework */; };
 		088C5950170D312900CF80A2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 088C594F170D312900CF80A2 /* CoreGraphics.framework */; };
@@ -25,6 +26,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		082A3DE3171550C400A786EB /* KCInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KCInfoViewController.h; sourceTree = "<group>"; };
+		082A3DE4171550C400A786EB /* KCInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KCInfoViewController.m; sourceTree = "<group>"; };
 		088C5948170D312900CF80A2 /* KCCurrencyConverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KCCurrencyConverter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		088C594B170D312900CF80A2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		088C594D170D312900CF80A2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -127,6 +130,8 @@
 				088C5967170D312900CF80A2 /* KCHomeViewController.m */,
 				088C59D1170FA51600CF80A2 /* KCCurrencySelectViewController.h */,
 				088C59D2170FA51600CF80A2 /* KCCurrencySelectViewController.m */,
+				082A3DE3171550C400A786EB /* KCInfoViewController.h */,
+				082A3DE4171550C400A786EB /* KCInfoViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -213,6 +218,7 @@
 				088C5968170D312900CF80A2 /* KCHomeViewController.m in Sources */,
 				088C59C1170D43E800CF80A2 /* KCConstants.m in Sources */,
 				088C59D3170FA51600CF80A2 /* KCCurrencySelectViewController.m in Sources */,
+				082A3DE5171550C400A786EB /* KCInfoViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

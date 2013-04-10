@@ -21,6 +21,7 @@
 @property (strong, nonatomic) NSString *toCurrencyCode;
 
 - (void)dismissKeyboard;
+- (void)showInfoScreen;
 - (void)convertCurrencyWithBaseFrom;
 - (void)convertCurrencyWithBaseTo;
 - (void)prepareActivityIndicatorView;
@@ -60,6 +61,12 @@
 
   // Setup activity indicator
   [self prepareActivityIndicatorView];
+  
+  // Add an info button to the navigation bar
+  UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
+  infoButton.frame = CGRectMake(infoButton.frame.origin.x, infoButton.frame.origin.y, infoButton.frame.size.width + 10.0, infoButton.frame.size.height);
+  [infoButton addTarget:self action:@selector(showInfoScreen) forControlEvents:UIControlEventTouchUpInside];
+  self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:infoButton];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -84,8 +91,6 @@
   }
   else {
     // Load cached rates
-//    NSString *disclaimer = [defaults objectForKey:kNSUserDefaultsDisclaimer];
-//    NSString *license = [defaults objectForKey:kNSUserDefaultsLicense];
     NSDictionary *currencies = [defaults objectForKey:kNSUserDefaultsCurrencies];
     NSDictionary *rates = [defaults objectForKey:kNSUserDefaultsRates];
     self.currencyTypes = currencies;
@@ -241,6 +246,11 @@
 - (void)dismissKeyboard
 {
   [self.view endEditing:YES];
+}
+
+- (void)showInfoScreen
+{
+  [self performSegueWithIdentifier:@"Info" sender:self];
 }
 
 - (void)convertCurrencyWithBaseFrom

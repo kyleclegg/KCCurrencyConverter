@@ -24,6 +24,8 @@
 
 - (void)viewDidLoad
 {
+  [super viewDidLoad];
+  
   // Store currency codes and names in private arrays for use within the controller
   NSMutableArray *mutableKeys = [[NSMutableArray alloc] init];
   NSMutableArray *mutableValues = [[NSMutableArray alloc] init];
